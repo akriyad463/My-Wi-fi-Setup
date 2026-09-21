@@ -10,8 +10,8 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     
-    <!-- PWA Manifest with App Icon and Standalone Display -->
-    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22My%20Wi-Fi%22%2C%22short_name%22%3A%22My%20Wi-Fi%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230a192f%22%2C%22theme_color%22%3A%22%231d4ed8%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27%231d4ed8%27%3E%3Cpath%20d%3D%27M12%203C6.95%203%203.15%204.85%200%207.23L12%2022%2024%207.23C20.85%204.85%2017.05%203%2012%203z%27%2F%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22My%20Wi-Fi%22%2C%22short_name%22%3A%22My%20Wi-Fi%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230a192f%22%2C%22theme_color%22%3A%22%231d4ed8%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27%231d4ed8%27%3E%3Cpath%20d%3D%27M12%203C6.95%203%203.15%204.85%200%207.23L12%2022%2024%207.23C20.85%204.85%2017.05%203%2012%203z%27%2F%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%27%7D%5D%7D">
     <meta name="theme-color" content="#1d4ed8">
     
     <!-- Tailwind CSS CDN -->
@@ -19,14 +19,13 @@
     <style>
         body { background-color: #0a192f; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
         .glass-card { background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(14px); border: 1px solid rgba(30, 58, 138, 0.45); }
-        .toast { transition: all 0.3s ease-in-out; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between font-sans antialiased selection:bg-blue-500 selection:text-white">
 
-    <!-- Toast In-App Notification Popup -->
+    <!-- Toast Notification Popup -->
     <div id="toastContainer" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-11/12 max-w-md hidden">
-        <div id="toastMessage" class="glass-card bg-blue-900/95 border border-blue-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center justify-between text-xs">
+        <div class="glass-card bg-blue-900/95 border border-blue-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center justify-between text-xs">
             <span id="toastText">System notification received!</span>
             <button onclick="hideToast()" class="text-blue-300 hover:text-white font-bold ml-2">✕</button>
         </div>
@@ -41,7 +40,8 @@
                 <p class="text-[10px] text-blue-400 font-medium">Gateway: 192.168.100.1 | mahig463@gmail.com</p>
             </div>
         </div>
-        <button id="installBtn" class="hidden bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-2 rounded-xl font-semibold shadow-lg transition-all flex items-center space-x-1">
+        <!-- Install button is now ALWAYS visible -->
+        <button id="installBtn" onclick="triggerInstall()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-2 rounded-xl font-semibold shadow-lg transition-all flex items-center space-x-1 cursor-pointer">
             <span>📥 Install App</span>
         </button>
     </header>
@@ -101,17 +101,15 @@
         </div>
 
         <!-- Network User Controls Grid -->
-        <div class="grid grid-cols-1 gap-4">
-            <div class="glass-card rounded-2xl p-4 shadow-xl">
-                <h3 class="text-xs font-bold text-white uppercase tracking-wide mb-3">👥 Active Verified Devices</h3>
-                <div class="space-y-2 text-xs">
-                    <div class="bg-slate-900/60 p-2.5 rounded-xl flex justify-between items-center border border-slate-800">
-                        <div>
-                            <p class="font-semibold text-white text-xs">Kamran-Master-Device</p>
-                            <p class="text-slate-400 font-mono text-[10px]">192.168.100.10</p>
-                        </div>
-                        <span class="text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2 py-0.5 rounded text-[10px]">Trusted</span>
+        <div class="glass-card rounded-2xl p-4 shadow-xl">
+            <h3 class="text-xs font-bold text-white uppercase tracking-wide mb-3">👥 Active Verified Devices</h3>
+            <div class="space-y-2 text-xs">
+                <div class="bg-slate-900/60 p-2.5 rounded-xl flex justify-between items-center border border-slate-800">
+                    <div>
+                        <p class="font-semibold text-white text-xs">Kamran-Master-Device</p>
+                        <p class="text-slate-400 font-mono text-[10px]">192.168.100.10</p>
                     </div>
+                    <span class="text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2 py-0.5 rounded text-[10px]">Trusted</span>
                 </div>
             </div>
         </div>
@@ -123,34 +121,36 @@
         <p>Copyright @ 2026 powered by Kamran Khan</p>
     </footer>
 
-    <!-- Script Automation & PWA Handler -->
+    <!-- Script Handler -->
     <script>
-        let deferredPrompt;
-        const installBtn = document.getElementById('installBtn');
+        if ('serviceWorker' in navigator) {
+            const swCode = `self.addEventListener('fetch', function(e) {});`;
+            const blob = new Blob([swCode], {type: 'text/javascript'});
+            navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(err => {});
+        }
 
+        let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            installBtn.classList.remove('hidden');
         });
 
-        installBtn.addEventListener('click', async () => {
+        function triggerInstall() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') installBtn.classList.add('hidden');
-                deferredPrompt = null;
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    deferredPrompt = null;
+                });
+            } else {
+                showToast("👉 To install: Tap the 3 dots (⋮) in Chrome top-right and select 'Install app'.");
             }
-        });
+        }
 
         function showToast(text) {
             const container = document.getElementById('toastContainer');
-            const messageText = document.getElementById('toastText');
-            messageText.innerText = text;
+            document.getElementById('toastText').innerText = text;
             container.classList.remove('hidden');
-            setTimeout(() => {
-                hideToast();
-            }, 5000);
+            setTimeout(() => { hideToast(); }, 6000);
         }
 
         function hideToast() {
