@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My Wi-Fi</title>
     
+    <!-- Link to Real Manifest File -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#1d4ed8">
+    
     <!-- Security & Policy Headers -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.tailwindcss.com https://fonts.googleapis.com https://fonts.gstatic.com data:; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22My%20Wi-Fi%22%2C%22short_name%22%3A%22My%20Wi-Fi%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230a192f%22%2C%22theme_color%22%3A%22%231d4ed8%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27%231d4ed8%27%3E%3Cpath%20d%3D%27M12%203C6.95%203%203.15%204.85%200%207.23L12%2022%2024%207.23C20.85%204.85%2017.05%203%2012%203z%27%2F%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%27%7D%5D%7D">
-    <meta name="theme-color" content="#1d4ed8">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -40,8 +38,8 @@
                 <p class="text-[10px] text-blue-400 font-medium">Gateway: 192.168.100.1 | mahig463@gmail.com</p>
             </div>
         </div>
-        <!-- Install button is now ALWAYS visible -->
-        <button id="installBtn" onclick="triggerInstall()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-2 rounded-xl font-semibold shadow-lg transition-all flex items-center space-x-1 cursor-pointer">
+        <!-- Real Install Button -->
+        <button id="installBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-2 rounded-xl font-semibold shadow-lg transition-all flex items-center space-x-1">
             <span>📥 Install App</span>
         </button>
     </header>
@@ -121,36 +119,42 @@
         <p>Copyright @ 2026 powered by Kamran Khan</p>
     </footer>
 
-    <!-- Script Handler -->
+    <!-- Real PWA & Notification Logic -->
     <script>
+        // Register Real Service Worker
         if ('serviceWorker' in navigator) {
-            const swCode = `self.addEventListener('fetch', function(e) {});`;
-            const blob = new Blob([swCode], {type: 'text/javascript'});
-            navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(err => {});
+            navigator.serviceWorker.register('./sw.js')
+                .then(() => console.log('Service Worker Registered Successfully'))
+                .catch(err => console.log('SW registration failed:', err));
         }
 
         let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
+            installBtn.style.display = 'flex';
         });
 
-        function triggerInstall() {
+        installBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    deferredPrompt = null;
-                });
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    installBtn.style.display = 'none';
+                }
+                deferredPrompt = null;
             } else {
-                showToast("👉 To install: Tap the 3 dots (⋮) in Chrome top-right and select 'Install app'.");
+                showToast("ℹ️ App is already installed or Chrome is preparing prompt. You can also use Chrome menu (⋮) -> 'Install app'.");
             }
-        }
+        });
 
         function showToast(text) {
             const container = document.getElementById('toastContainer');
             document.getElementById('toastText').innerText = text;
             container.classList.remove('hidden');
-            setTimeout(() => { hideToast(); }, 6000);
+            setTimeout(() => { hideToast(); }, 5000);
         }
 
         function hideToast() {
