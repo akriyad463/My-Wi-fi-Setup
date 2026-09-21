@@ -1,15 +1,23 @@
 {
-  "name": "My Wi-Fi",
+  "name": "My Wi-Fi Setup",
   "short_name": "My Wi-Fi",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0a192f",
   "theme_color": "#1d4ed8",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/9198/9198357.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/2881/2881878.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2881/2881878.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
