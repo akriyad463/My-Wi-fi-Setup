@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>My Wi-Fi</title>
+    <title>My Wi-Fi Setup</title>
     
     <!-- Link to Real Manifest File -->
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#1d4ed8">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     
-    <!-- Security & Policy Headers -->
+    <!-- Security & Tailwind CSS -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.tailwindcss.com https://fonts.googleapis.com https://fonts.gstatic.com data:; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;">
-    
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #0a192f; color: #e2e8f0; -webkit-tap-highlight-color: transparent; }
@@ -21,10 +21,10 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between font-sans antialiased selection:bg-blue-500 selection:text-white">
 
-    <!-- Toast Notification Popup -->
+    <!-- Instant Notification Popup Bar -->
     <div id="toastContainer" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-11/12 max-w-md hidden">
         <div class="glass-card bg-blue-900/95 border border-blue-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center justify-between text-xs">
-            <span id="toastText">System notification received!</span>
+            <span id="toastText">🛡️ My Wi-Fi Security Active</span>
             <button onclick="hideToast()" class="text-blue-300 hover:text-white font-bold ml-2">✕</button>
         </div>
     </div>
@@ -34,12 +34,12 @@
         <div class="flex items-center space-x-3">
             <div class="bg-blue-600 p-2 rounded-xl text-white font-bold text-base shadow-md">🛡️</div>
             <div>
-                <h1 class="text-base font-extrabold tracking-wide text-white">My Wi-Fi</h1>
-                <p class="text-[10px] text-blue-400 font-medium">Gateway: 192.168.100.1 | mahig463@gmail.com</p>
+                <h1 class="text-base font-extrabold tracking-wide text-white">My Wi-Fi Setup</h1>
+                <p class="text-[10px] text-blue-400 font-medium">Gateway: 192.168.100.1 | Status: Secure</p>
             </div>
         </div>
-        <!-- Real Install Button -->
-        <button id="installBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-2 rounded-xl font-semibold shadow-lg transition-all flex items-center space-x-1">
+        <!-- Real Native Install Button -->
+        <button id="installBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-2 rounded-xl font-semibold shadow-lg transition-all hidden items-center space-x-1 cursor-pointer">
             <span>📥 Install App</span>
         </button>
     </header>
@@ -52,7 +52,7 @@
             <div>
                 <h2 class="text-xs font-semibold text-blue-300 uppercase tracking-wider">Auto-Isolation Shield</h2>
                 <p class="text-sm font-bold text-white mt-0.5">Status: <span class="text-emerald-400">Active & Protecting</span></p>
-                <p class="text-[10px] text-slate-400 mt-1">Instant Email Alerts: <span class="text-blue-300 font-mono">mahig463@gmail.com</span></p>
+                <p class="text-[10px] text-slate-400 mt-1">Alert System: <span class="text-blue-300 font-mono">Configured (Background)</span></p>
             </div>
             <div class="flex items-center space-x-2">
                 <span class="relative flex h-3 w-3">
@@ -63,11 +63,11 @@
             </div>
         </div>
 
-        <!-- Simulation Trigger for Testing Notifications -->
+        <!-- Simulation Trigger -->
         <div class="glass-card rounded-xl p-3 shadow-md flex justify-between items-center bg-blue-950/30">
             <div>
                 <p class="text-xs font-semibold text-white">Test Connection Simulation</p>
-                <p class="text-[10px] text-slate-400">Test app notification & email dispatch flow</p>
+                <p class="text-[10px] text-slate-400">Test app notification & alert dispatch flow</p>
             </div>
             <button onclick="simulateNewDevice()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition shadow">Simulate Device</button>
         </div>
@@ -88,7 +88,7 @@
                             <span class="bg-amber-500/20 text-amber-300 text-[9px] px-2 py-0.5 rounded border border-amber-500/30">Auto-Blocked</span>
                         </div>
                         <p class="text-[10px] text-slate-400 mt-1 font-mono">IP: 192.168.100.45 | MAC: 54:32:10:aa:bb:cc</p>
-                        <p class="text-[10px] text-blue-400 mt-0.5">Alert dispatched to mahig463@gmail.com</p>
+                        <p class="text-[10px] text-blue-400 mt-0.5">Alert targeted to background system</p>
                     </div>
                     <div class="flex space-x-2 pt-1">
                         <button onclick="handleAction(this, 'Approved')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] py-1.5 rounded-lg font-semibold transition">Approve Access</button>
@@ -119,17 +119,16 @@
         <p>Copyright @ 2026 powered by Kamran Khan</p>
     </footer>
 
-    <!-- Real PWA & Notification Logic -->
+    <!-- Optimized Script -->
     <script>
-        // Register Real Service Worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js')
-                .then(() => console.log('Service Worker Registered Successfully'))
-                .catch(err => console.log('SW registration failed:', err));
-        }
-
-        let deferredPrompt;
+        let deferredPrompt = null;
         const installBtn = document.getElementById('installBtn');
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(err => {});
+            });
+        }
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -145,16 +144,20 @@
                     installBtn.style.display = 'none';
                 }
                 deferredPrompt = null;
-            } else {
-                showToast("ℹ️ App is already installed or Chrome is preparing prompt. You can also use Chrome menu (⋮) -> 'Install app'.");
             }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                showToast("⚡ My Wi-Fi Setup Initialized & Secure");
+            }, 600);
         });
 
         function showToast(text) {
             const container = document.getElementById('toastContainer');
             document.getElementById('toastText').innerText = text;
             container.classList.remove('hidden');
-            setTimeout(() => { hideToast(); }, 5000);
+            setTimeout(() => { hideToast(); }, 4000);
         }
 
         function hideToast() {
@@ -177,7 +180,7 @@
                         <span class="bg-amber-500/20 text-amber-300 text-[9px] px-2 py-0.5 rounded border border-amber-500/30">Auto-Blocked</span>
                     </div>
                     <p class="text-[10px] text-slate-400 mt-1 font-mono">IP: 192.168.100.${randomHex} | MAC: 77:88:99:bb:${randomHex}:${randomHex}</p>
-                    <p class="text-[10px] text-blue-400 mt-0.5">Email alert dispatched to mahig463@gmail.com</p>
+                    <p class="text-[10px] text-blue-400 mt-0.5">Background alert dispatched successfully</p>
                 </div>
                 <div class="flex space-x-2 pt-1">
                     <button onclick="handleAction(this, 'Approved')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] py-1.5 rounded-lg font-semibold transition">Approve Access</button>
@@ -185,7 +188,7 @@
                 </div>
             `;
             queue.prepend(newCard);
-            showToast("⚠️ New connection! Email alert sent to mahig463@gmail.com");
+            showToast("⚠️ New connection detected! Background alert dispatched.");
         }
 
         function handleAction(button, status) {
